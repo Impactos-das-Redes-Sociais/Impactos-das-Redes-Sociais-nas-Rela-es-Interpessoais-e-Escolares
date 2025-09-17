@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impactos das Redes Sociais nas Relações Interpessoais e Escolares</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: top 0.3s ease;
+        }
+
+        header.hide {
+            top: -100px;
+        }
+
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: #667eea;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            margin: 2rem 0;
+            padding: 4rem 2rem;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .authors {
+            font-style: italic;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .content {
+            background: white;
+            margin: 2rem 0;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #f0f2ff;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem 0;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f2ff 0%, #ffeef8 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            margin: 2rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (min-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin: 2rem 0;
+            position: relative;
+            height: 400px;
+        }
+
+        .articles-section {
+            background: #f8f9ff;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .article-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .article-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .article-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .article-date {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .article-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .article-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        .ifsul-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            width: 40px;
+            height: 40px;
+        }
+
+        .logo-square {
+            background: #667eea;
+            border-radius: 2px;
+        }
+
+        .logo-square:nth-child(1) {
+            border-radius: 50%;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .content {
+                margin: 1rem 0;
+                padding: 2rem 1.5rem;
+            }
+
+            .modal-content {
+                margin: 1rem;
+                padding: 2rem;
+                max-width: calc(100% - 2rem);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <img src="logo.png" alt="Logo IFSUL" style="height: 50px; margin-right: 10px;">
+                <div>
+                    Impactos das Redes Sociais
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#inicio">Início</a></li>
+                <li><a href="#problema">Problema</a></li>
+                <li><a href="#metodologia">Metodologia</a></li>
+                <li><a href="#resultados">Resultados</a></li>
+                <li><a href="#artigos">Artigos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section id="inicio" class="hero fade-in">
+            <h1>Impactos das Redes Sociais nas Relações<br>Interpessoais e Escolares</h1>
+            <div class="authors">
+                Válter Lenine Fernandes • Sérgio Almeida Migowski • Rodrigo Nascimento da Silva • Leonardo Rustick Migowski • Guilherme Henrique Zitzke Hönke •
+            </div>
+        </section>
+
+        <div class="content fade-in">
+            <section id="problema" class="section">
+                <h2>Problema de Pesquisa</h2>
+                <div class="highlight-box">
+                    <p><strong>Quais são os impactos da utilização das redes sociais nos relacionamentos interpessoais e
+                            escolares dos alunos de ensino médio de duas escolas federais do Rio Grande do Sul?</strong>
+                    </p>
+                </div>
+
+                <h3>Justificativa</h3>
+                <p>A ausência de uso saudável das redes sociais vem sendo apontada como causa de suicídios.
+                    Aproximadamente mil jovens entre 10 e 19 anos tiram suas próprias vidas no Brasil a cada ano. Dentre
+                    os motivos, os traumas, abusos e violências sofridos, além do sentimento de culpa e de não adequação
+                    (SBP, 2023).</p>
+                <p>O uso exagerado dos smartphones a partir de 2010 entre jovens gera reflexos no aprendizado escolar.
+                    As notas de matemática, leitura e ciências despencaram globalmente desde 2010, conforme o exame Pisa
+                    (LEMOS, 2024).</p>
+            </section>
+
+            <section class="section">
+                <h2>Objetivos</h2>
+
+                <h3>Objetivo Geral</h3>
+                <p>Analisar os impactos da utilização das redes sociais nos relacionamentos interpessoais e escolares
+                    dos alunos de ensino médio de duas escolas federais do Rio Grande do Sul.</p>
+
+                <h3>Objetivos Específicos</h3>
+                <ul style="margin-left: 2rem; margin-top: 1rem;">
+                    <li>Verificar quantas plataformas de redes sociais são utilizadas pelos respondentes</li>
+                    <li>Apurar o tempo de uso das redes sociais</li>
+                    <li>Identificar os reflexos do uso das redes sociais sobre o desempenho acadêmico, sono, autoestima
+                        e relacionamento interpessoal</li>
+                    <li>Verificar se o uso em ambientes não escolares aumentou após a proibição do uso de celulares</li>
+                    <li>Propor ações para a melhor utilização das redes sociais</li>
+                </ul>
+            </section>
+
+            <section id="metodologia" class="section">
+                <h2>Metodologia</h2>
+                <p>O presente estudo tem como base o paradigma qualitativo e explicativo e descritivo quanto aos
+                    objetivos. Foi realizada a aplicação de questionários para duas turmas do turno da manhã dos
+                    primeiros dois anos do ensino médio de dois câmpus do IFSUL de Novo Hamburgo (RS) e Sapiranga (RS).
+                </p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">128</div>
+                        <div class="stat-label">Total de Alunos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">81</div>
+                        <div class="stat-label">Respondentes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">63.28%</div>
+                        <div class="stat-label">Taxa de Resposta</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">Câmpus IFSUL</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="resultados" class="section">
+                <h2>Resultados</h2>
+
+                <h3>Uso Intenso/Moderado</h3>
+                <div class="chart-container">
+                    <canvas id="usoChart"></canvas>
+                </div>
+
+                <h3>Constructos Analisados</h3>
+                <div class="chart-container">
+                    <canvas id="constructosChart"></canvas>
+                </div>
+
+                <h3>Impactos Identificados</h3>
+                <div class="chart-container">
+                    <canvas id="impactosChart"></canvas>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>Principais Descobertas:</h3>
+                    <ul style="margin-left: 2rem;">
+                        <li><strong>88,9%</strong> acessam redes sociais mais de 2 horas por dia</li>
+                        <li><strong>80,2%</strong> possuem mais de cinco redes sociais</li>
+                        <li><strong>74,1%</strong> verificam redes sociais mais de 5 vezes ao dia</li>
+                        <li><strong>54,3%</strong> admitiram perda na capacidade de concentração</li>
+                        <li><strong>60,5%</strong> costuma comparar-se com outras pessoas nas redes</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>Conclusão</h2>
+                <p>De forma geral, há um uso excessivo das redes sociais, tanto pela carga horária, quanto pelo número
+                    de plataformas acessadas. Apesar de não admitirem impactos em seu rendimento escolar, os
+                    respondentes assumem sentir sonolência ao longo do dia, o que costuma estar relacionado a perdas de
+                    aprendizado.</p>
+
+                <div class="highlight-box">
+                    <h3>Sugestão de Aplicação:</h3>
+                    <p>Se os docentes forem capazes de elaborar práticas e atividades a serem compartilhadas nas redes
+                        sociais, parte do uso diário poderá se transformar em algo positivo para o rendimento escolar.
+                    </p>
+                </div>
+            </section>
+        </div>
+
+        <section id="artigos" class="articles-section fade-in">
+            <div class="container">
+                <h2 style="text-align: center; color: #667eea; margin-bottom: 2rem;">Artigos de Referência</h2>
+                <p style="text-align: center; margin-bottom: 2rem; color: #666;">
+                    Explore os artigos que fundamentaram esta pesquisa. Clique em qualquer artigo para ver seu resumo.
+                </p>
+
+                <div class="articles-grid" id="articlesGrid">
+                    <!-- Os artigos serão inseridos dinamicamente via JavaScript -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal para exibir resumos dos artigos -->
+    <div id="articleModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div id="modalContent">
+                <!-- Conteúdo do artigo será inserido aqui -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>2024 IFSUL - Instituto Federal Sul-rio-grandense. Todos os direitos reservados.</p>
+            <p>Pesquisa desenvolvida nos Câmpus de Novo Hamburgo e Sapiranga</p>
+        </div>
+        </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dados dos artigos extraídos do PDF fornecido
+        const articles = [
+            {
+                title: "Rede Social e Indicação de Amigo Definem Compras",
+                date: "06/02/2025",
+                summary: "Proibir o uso de smartphones nas escolas não está resultando em notas mais altas para os alunos ou melhorias em sua saúde mental. O primeiro estudo realizado sobre o tema, no Reino Unido, concluiu que a medida não é suficiente para tais benefícios diante da quantidade de horas que os adolescentes passam no celular. O tempo de sono, o comportamento em sala de aula, o volume de exercícios físicos praticados e o tempo total que os estudantes passam no telefone não apresentam diferenças significativas entre os alunos de escolas que adotaram a proibição e dos que estudam onde as regras não se aplicam.",
+                link: "https://www.estadao.com.br/educacao/proibir-celular-na-escola-melhora-nota-dos-alunos-veja-o-que-diz-estudo-internacional/"
+            },
+            {
+                title: "Rede Social Está Ligada a Alterações Cerebrais Em Crianças",
+                date: "26/10/2023",
+                summary: "Um estudo de neurocientistas da Universidade da Carolina do Norte (EUA) analisou o impacto do uso de redes sociais no cérebro de adolescentes entre 12 e 15 anos. A pesquisa, publicada no JAMA Pediatrics, fez varreduras cerebrais sucessivas em 169 alunos e concluiu que os jovens que checavam redes sociais com frequência apresentavam maior sensibilidade às recompensas sociais ao longo do tempo. Adolescentes que verificavam seus feeds 15 vezes ou mais por dia mostraram maior ativação de áreas cerebrais ligadas ao processamento de recompensas.",
+                link: "https://www1.folha.uol.com.br/equilibrioesaude/2023/01/uso-de-redes-sociais-esta-ligado-a-alteracoes-cerebrais-em-adolescentes-diz-pesquisa.shtml"
+            },
+            {
+                title: "'Cancelamento' É Falta De Caráter",
+                date: "15/11/2023",
+                summary: "Uma juíza dos Estados Unidos rejeitou, em novembro de 2023, os esforços de grandes empresas de mídia social para encerrar um litígio nacional que acusa as plataformas de atrair e viciar milhões de crianças, prejudicando sua saúde mental. A decisão atinge empresas como Alphabet (Google e YouTube), Meta (Facebook e Instagram), ByteDance (TikTok) e Snap (Snapchat). O caso reúne centenas de processos de famílias e distritos escolares que relatam efeitos como ansiedade, depressão e até suicídio associados ao uso excessivo das redes.",
+                link: "https://www1.folha.uol.com.br/tec/2023/11/redes-sociais-enfrentarao-processos-sobre-dependencia-de-jovens-determina-juiza-dos-eua.shtml"
+            },
+            {
+                title: "'Detox Digital' Pode Não Melhorar a Sensação de Bem-Estar",
+                date: "14/10/2024",
+                summary: "Um estudo da Universidade de Oxford revelou que o uso de redes sociais por adolescentes está fortemente associado a níveis mais altos de ansiedade e depressão. O levantamento, considerado o maior do mundo sobre saúde mental juvenil, mostrou que cerca de 60% dos jovens de 16 a 18 anos passam entre duas e quatro horas por dia em redes como Instagram, Snapchat, TikTok, WhatsApp e YouTube. O professor John Gallacher, líder da pesquisa, afirmou ter encontrado uma relação linear entre o tempo gasto nas plataformas e o aumento de problemas emocionais.",
+                link: "https://www1.folha.uol.com.br/tec/2024/10/redes-sociais-estao-ligadas-a-ansiedade-e-depressao-em-adolescentes-diz-estudo-de-oxford.shtml"
+            },
+            {
+                title: "Moda em Londres é Curtir as Noites 'Longe' do Telefone Celular",
+                date: "11/06/2025",
+                summary: "A crise de saúde mental entre crianças e adolescentes atingiu um ponto crítico devido à 'expansão descontrolada' das redes sociais, segundo relatório do grupo KidsRights divulgado em junho de 2025. O estudo, feito em parceria com a Universidade Erasmus de Roterdã, aponta que 1 em cada 7 jovens de 10 a 19 anos sofre de algum transtorno mental. O relatório identificou uma 'correlação perturbadora' entre a deterioração da saúde mental e o uso 'problemático' das redes sociais, descrito como viciante e prejudicial à vida cotidiana.",
+                link: "https://www1.folha.uol.com.br/equilibrio/2025/06/redes-sociais-alimentam-problemas-de-saude-mental-em-criancas-e-adolescentes-diz-estudo.shtml"
+            },
+            {
+                title: "Não Há Muita Diferença Entre o Vício em Drogas e no Celular",
+                date: "05/11/2023",
+                summary: "Um processo movido por 41 estados americanos e o Distrito de Columbia acusa a Meta (Facebook, Instagram, WhatsApp e Messenger) de usar recursos para tornar crianças e adolescentes compulsivos em suas plataformas. Segundo especialistas, a atração das redes sociais vem de mecanismos semelhantes aos jogos de azar. O psicólogo David Greenfield explica que a tática do 'reforço intermitente' — recompensas imprevisíveis — cria um ciclo viciante, comparável a uma máquina caça-níqueis.",
+                link: "https://www1.folha.uol.com.br/equilibrio/2023/11/redes-sociais-viciam-veja-o-que-a-ciencia-diz.shtml"
+            },
+            {
+                title: "Facebook Sabe Que Instagram É Risco Para Saúde Mental De Adolescentes",
+                date: "15/09/2021",
+                summary: "Documentos internos revelados pelo Wall Street Journal mostram que o Facebook sabia que o Instagram era prejudicial à saúde mental de adolescentes, especialmente meninas. Apresentações internas entre 2019 e 2020 apontaram que o aplicativo piorava a autoestima de 1 em cada 3 adolescentes do sexo feminino, além de estar ligado a casos de ansiedade, depressão e até pensamentos suicidas — 13% das jovens britânicas e 6% das americanas com ideação suicida atribuíram isso diretamente à rede.",
+                link: "https://www1.folha.uol.com.br/mercado/2021/09/facebook-sabe-que-instagram-e-risco-para-saude-mental-de-adolescentes-diz-jornal.shtml"
+            },
+            {
+                title: "54,8% das Crianças e dos Adolescentes de 10 a 13 Anos Têm Celular",
+                date: "10/11/2023",
+                summary: "Segundo o IBGE, 54,8% das crianças e adolescentes de 10 a 13 anos já tinham celular em 2022, um recorde desde o início da série histórica em 2016. O índice mostra alta em relação a 2021 (51,4%) e indica que o celular se tornou cada vez mais comum nessa faixa etária. Em 2016, eram 39,3%. Apesar disso, os jovens de 10 a 13 anos ainda representam a menor taxa entre os grupos etários avaliados. Os maiores índices de posse estão entre adultos de 25 a 39 anos, com quase 95%.",
+                link: "https://www1.folha.uol.com.br/mercado/2023/11/548-das-criancas-e-dos-adolescentes-de-10-a-13-anos-tem-celular-no-brasil.shtml"
+            },
+            {
+                title: "A Lei do WhatsApp Pode Funcionar",
+                date: "25/07/2020",
+                summary: "Reportagem mostra que mais da metade das crianças e adolescentes no Brasil já possuem celular próprio, o que amplia a preocupação com exposição a riscos digitais. O tema se conecta ao debate sobre a chamada 'Lei das Fake News', aprovada no Senado em 2020, que buscava combater desinformação também em aplicativos de mensagem como o WhatsApp. Articulistas apontaram que o ponto central da lei era o artigo 10, que trata especificamente dos serviços de mensageria.",
+                link: "https://link.estadao.com.br/noticias/geral,a-lei-do-whatsapp-pode-funcionar,70003374185"
+            },
+            {
+                title: "Estudo Aponta Que 48% Dos Jovens Consideram Que As Redes Sociais Fazem Mal À Saúde Mental",
+                date: "23/02/2024",
+                summary: "Um levantamento do Pew Research Center mostrou que 48% dos adolescentes acreditam que as redes sociais prejudicam a saúde mental de sua geração, um salto de 16 pontos em relação a 2022. Apesar disso, apenas 14% dizem sentir impacto negativo direto em suas vidas. Especialistas defendem educação digital crítica para lidar com riscos e benefícios do uso online.",
+                link: "https://oglobo.globo.com/economia/tecnologia/noticia/2025/04/22/estudo-aponta-que-48percent-dos-jovens-consideram-que-as-redes-sociais-fazem-mal-a-saude-mental.ghtml"
+            },
+            {
+                title: " Estados Dos EUA Acusam Meta De Prejudicar Saúde De Jovens",
+                date: "03/06/2025",
+                summary: "Mais de 30 estados americanos entraram com ação contra a Meta, acusando a empresa de prejudicar a saúde física e mental de adolescentes por meio de recursos que promovem vício digital. A iniciativa marca um dos maiores litígios contra uma Big Tech nos EUA.",
+                link: "https://www1.folha.uol.com.br/equilibrioesaude/2023/10/estados-dos-eua-acusam-meta-de-prejudicar-saude-fisica-e-mental-de-jovens.shtml"
+            },
+            {
+                title: "Dependência Digital Chega à Terceira Idade",
+                date: "07/03/2025",
+                summary: "Segundo a PNAD 2024, o número de idosos conectados mais que dobrou desde 2016, e 86,5% afirmam usar a rede diariamente. Pesquisadores alertam para os riscos de compulsão digital, isolamento social e quadros depressivos nesse público, ainda pouco incluído em iniciativas de educação midiática.",
+                link: "https://www1.folha.uol.com.br/educacao/2025/03/dependencia-digital-chega-a-terceira-idade.shtml"
+            },
+            {
+                title: "Depressão - Redes Sociais Aumentam o Risco Do Distúrbio Em Adultos Jovens",
+                date: "03/10/2022",
+                summary: "Estudo publicado na Journal of Affective Disorders Reports revelou que jovens adultos que passam mais de 5 horas por dia em redes sociais têm até 50% mais risco de desenvolver depressão. A comparação social e o consumo de conteúdo negativo foram apontados como fatores de risco.",
+                link: "https://oglobo.globo.com/saude/medicina/noticia/2022/10/depressao-redes-sociais-aumentam-o-risco-do-disturbio-em-adultos-jovens-independente-do-tipo-de-personalidade.ghtml"
+            },
+            {
+                title: "Essa Especialista Diz Que Só Proibir Celular Na Escola Não Resolve - Entenda Por Quê",
+                date: "22/04/2025",
+                summary: "A especialista em educação midiática critica propostas que tratam o celular como vilão único na educação. Ela defende que apenas banir o dispositivo das escolas não resolve problemas de aprendizagem, sendo necessário investir em educação digital e mediação consciente do uso da tecnologia.",
+                link: "https://www.estadao.com.br/educacao/celular-nao-se-compara-ao-cigarro-e-so-proibir-nao-resolve-diz-especialista-em-educacao-midiatica/"
+            },
+            {
+                title: "Estudos ligam uso inadequado de redes sociais a depressão entre adolescentes",
+                date: "27/07/2019",
+                summary: "Pesquisas recentes apontam que o uso excessivo das redes sociais está diretamente ligado ao aumento de casos de depressão, ansiedade e isolamento social em jovens. Especialistas alertam que a exposição constante a padrões irreais e a busca por validação online intensificam os riscos psicológicos, especialmente na adolescência, período de maior vulnerabilidade emocional.",
+                link: "https://saude.estadao.com.br/noticias/geral,estudos-ligam-uso-inadequado-de-redes-sociais-a-depressao-entre-adolescentes,70002942161"
+            },
+
+            {
+                title: "Celular Virou 'Chupeta' Para Adultos",
+                date: "18/08/2022",
+                summary: "Pesquisadores descrevem que o celular assumiu papel semelhante a uma 'chupeta emocional', sendo usado como recurso imediato de conforto, mas que também potencializa ansiedade, dependência digital e distúrbios de sono. O fenômeno está diretamente relacionado ao crescimento da nomofobia — medo de ficar sem acesso ao aparelho.",
+                link: "https://www.estadao.com.br/saude/celular-virou-chupeta-para-adultos-diz-pesquisador-veja-sinais-de-dependencia/"
+            },
+            {
+                title: "Dona do Facebook explorou fraquezas dos adolescentes, diz estudo citado por jornal",
+                date: "26/11/2023",
+                summary: "Documentos internos mostraram que a Meta projetou recursos com o objetivo de explorar vulnerabilidades dos jovens, aumentando a liberação de dopamina e reforçando o uso compulsivo, mesmo ciente dos potenciais danos à saúde mental. A revelação intensificou processos judiciais contra a empresa.",
+                link: "https://www1.folha.uol.com.br/mercado/2023/11/dona-do-facebook-explorou-fraquezas-dos-adolescentes-diz-estudo-citado-por-jornal.shtml"
+            },
+            {
+                title: "Proporção de crianças que têm celular dispara em menos de uma década",
+                date: "11/02/2025",
+                summary: "Dados recentes mostram que a proporção de crianças com celular próprio praticamente dobrou em menos de uma década. O contato com a internet ocorre cada vez mais cedo, enquanto o uso de computadores tradicionais perde espaço entre os mais jovens.",
+                link: "https://www1.folha.uol.com.br/cotidiano/2025/02/proporcao-de-criancas-com-celular-dispara-em-menos-de-uma-decada.shtml"
+            },
+            {
+                title: "A transformação das redes",
+                date: "27/10/2023",
+                summary: "Pedro Doria analisa como as redes sociais, moldadas por algoritmos, passaram a intensificar toxicidade e manipulação emocional, afastando usuários comuns e transformando o espaço digital em um ambiente de baixa qualidade cognitiva.",
+                link: "https://oglobo.globo.com/opiniao/pedro-doria/coluna/2023/10/a-transformacao-das-redes.ghtml"
+            },
+
+            {
+                title: "Depressão: redes sociais aumentam o risco do distúrbio em adultos jovens, independente do tipo de personalidade",
+                date: "03/10/2022",
+                summary: "Um estudo internacional mostrou que o uso excessivo de redes sociais pode elevar em até 50% o risco de depressão entre jovens adultos. A comparação social e a exposição contínua a conteúdos negativos foram identificados como principais gatilhos para esse aumento.",
+                link: "https://oglobo.globo.com/saude/medicina/noticia/2022/10/depressao-redes-sociais-aumentam-o-risco-do-disturbio-em-adultos-jovens-independente-do-tipo-de-personalidade.ghtml"
+            },
+            
+           
+
+
+
+
+
+        ];
+
+        // Função para gerar os cards dos artigos
+        function generateArticleCards() {
+            const grid = document.getElementById('articlesGrid');
+            articles.forEach((article, index) => {
+                const card = document.createElement('div');
+                card.className = 'article-card';
+                card.innerHTML = `
+                    <div class="article-title">${article.title}</div>
+                    <div class="article-date">${article.date}</div>
+                    <button class="article-btn" onclick="openArticle(${index})">
+                        📖 Ler Resumo
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Função para abrir o modal do artigo
+        function openArticle(index) {
+            const article = articles[index];
+            const modal = document.getElementById('articleModal');
+            const content = document.getElementById('modalContent');
+
+            content.innerHTML = `
+                <h2 style="color: #667eea; margin-bottom: 1rem;">${article.title}</h2>
+                <p style="font-style: italic; color: #666; margin-bottom: 2rem;">Data: ${article.date}</p>
+                <div style="line-height: 1.8;">
+                    <h3 style="color: #764ba2; margin-bottom: 1rem;">Resumo:</h3>
+                    <p>${article.summary}</p>
+                </div>
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #eee;">
+                    <a href="${article.link}" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.8rem 2rem; border-radius: 25px; text-decoration: none; font-weight: 500;">
+                        🔗 Acessar Artigo Original
+                    </a>
+                </div>
+            `;
+
+            modal.style.display = 'block';
+        }
+
+        // Função para fechar o modal
+        function closeModal() {
+            document.getElementById('articleModal').style.display = 'none';
+        }
+
+        // Fechar modal clicando fora dele
+        window.onclick = function (event) {
+            const modal = document.getElementById('articleModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Gráficos
+        function createCharts() {
+            // Gráfico de Uso
+            const ctx1 = document.getElementById('usoChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Mais de 2h/dia (88,9%)', 'Menos de 2h/dia (11,1%)'],
+                    datasets: [{
+                        data: [88.9, 11.1],
+                        backgroundColor: ['#667eea', '#764ba2'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Tempo de Uso Diário das Redes Sociais',
+                            font: { size: 16, weight: 'bold' }
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Gráfico de Constructos
+            const ctx2 = document.getElementById('constructosChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Uso Intenso', 'Ansiedade', 'Baixa Autoestima', 'Problemas Sono', 'Perda Concentração'],
+                    datasets: [{
+                        data: [88.9, 74.1, 60.5, 54.3, 54.3],
+                        backgroundColor: ['#667eea', '#764ba2', '#8b5fbf', '#a052c4', '#b545c7'],
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Percentual por Constructo Analisado',
+                            font: { size: 16, weight: 'bold' }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Percentual (%)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Gráfico de Impactos
+            const ctx3 = document.getElementById('impactosChart').getContext('2d');
+            new Chart(ctx3, {
+                type: 'radar',
+                data: {
+                    labels: ['Verificam +5x/dia', 'Comportamento Hipervigilante', 'Não conseguem se desligar', 'Verificam telefone constantemente', 'Buscam internet sempre'],
+                    datasets: [{
+                        label: 'Percentual de Estudantes',
+                        data: [74.1, 77.8, 79, 61.7, 65.4],
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        borderColor: '#667eea',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#764ba2',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Comportamentos Relacionados à Ansiedade (%)',
+                            font: { size: 16, weight: 'bold' }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Smooth scroll para navegação
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', function () {
+            generateArticleCards();
+            createCharts();
+        });
+
+    </script>
+    <script>
+        let lastScroll = 0;
+        const header = document.querySelector("header");
+
+        window.addEventListener("scroll", () => {
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > lastScroll) {
+                // Scroll pra baixo → esconder
+                header.classList.add("hide");
+            } else {
+                // Scroll pra cima → mostrar
+                header.classList.remove("hide");
+            }
+
+            lastScroll = currentScroll;
+        });
+    </script>
+
+</body>
+
+</html>
